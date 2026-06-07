@@ -1,29 +1,24 @@
 // 1. Ambient Mouse Glow Effect
-// Creates a soft light effect that follows the user's mouse cursor.
 const glow = document.createElement('div');
 glow.classList.add('mouse-glow');
 document.body.appendChild(glow);
 
 window.addEventListener('mousemove', (e) => {
-    // Adjust position based on mouse coordinates
     glow.style.left = `${e.clientX}px`;
     glow.style.top = `${e.clientY}px`;
 });
 
-// 2. Navbar Scroll Effect (Glassmorphism trigger)
-// Adds background blur when the user scrolls down.
+// 2. Navbar Scroll Effect
 window.addEventListener('scroll', () => {
     const navbar = document.getElementById('navbar');
     const scrollTopBtn = document.getElementById('scrollTop');
     
-    // Navbar styling
     if (window.scrollY > 50) {
         navbar.classList.add('scrolled');
     } else {
         navbar.classList.remove('scrolled');
     }
 
-    // Scroll to top button visibility
     if (window.scrollY > 400) {
         scrollTopBtn.classList.add('show');
     } else {
@@ -32,152 +27,137 @@ window.addEventListener('scroll', () => {
 });
 
 // 3. Scroll Reveal & Skill Bar Animation
-// Uses IntersectionObserver to detect when elements enter the viewport
 const observerOptions = {
     root: null,
     rootMargin: '0px',
-    threshold: 0.15 // Trigger animation when 15% of the element is visible
+    threshold: 0.15 
 };
 
 const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            // Add 'visible' class to trigger CSS Fade-In effect
             entry.target.classList.add('visible');
 
-            // Trigger Skill Bar animation if the visible element is a skill category
             if (entry.target.classList.contains('skill-category')) {
                 const skillFills = entry.target.querySelectorAll('.skill-fill');
                 skillFills.forEach(fill => {
                     const width = fill.getAttribute('data-width');
-                    fill.style.width = width + '%'; // Triggers CSS width transition
+                    fill.style.width = width + '%'; 
                 });
             }
-            
-            // Stop observing the element once animated
             observer.unobserve(entry.target);
         }
     });
 }, observerOptions);
 
-// Observe all elements with the 'fade-in' class
 document.querySelectorAll('.fade-in').forEach(el => {
     observer.observe(el);
 });
 
-// 4. Form Submission Handling
-// Provides interactive response without page reload
+// 4. Form Submission Handling with Web3Forms
 function handleSubmit(event) {
-    event.preventDefault(); // Prevent default form reload
+    event.preventDefault(); 
     
-    const btn = event.target.querySelector('button');
+    const form = event.target;
+    const btn = form.querySelector('button');
     const originalText = btn.innerHTML;
     
-    // Simple loading effect
     btn.innerHTML = 'Sending...';
     btn.style.opacity = '0.7';
 
-       // Simulate data submission
-    setTimeout(() => {
-        // Menggunakan SweetAlert2 untuk notifikasi yang modern
+    const formData = new FormData(form);
+    
+    // PENTING: Masukkan Access Key Web3Forms kamu di sini
+    formData.append("access_key", "PASTE_KODE_DARI_EMAIL_DISINI");
+
+    fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+    })
+    .then(async (response) => {
+        let json = await response.json();
+        if (response.status == 200) {
+            Swal.fire({
+                title: 'Wih, ada pesan masuk! 🚀',
+                text: 'Your message has been sent successfully! I will get back to you soon.',
+                icon: 'success',
+                background: '#1e293b', 
+                color: '#f8fafc', 
+                confirmButtonColor: '#10b981' 
+            });
+            form.reset(); 
+        } else {
+            Swal.fire({
+                title: 'Oops!',
+                text: json.message || 'Something went wrong.',
+                icon: 'error',
+                background: '#1e293b', 
+                color: '#f8fafc'
+            });
+        }
+    })
+    .catch(error => {
         Swal.fire({
-            title: 'SUCCSESS🚀',
-            text: 'Your message has been sent successfully! I will get back to you soon.',
-            icon: 'success',
-            background: '#1e293b', // Warna background pop-up (senada dengan tema)
-            color: '#f8fafc', // Warna teks
-            confirmButtonColor: '#10b981' // Warna tombol hijau
+            title: 'Network Error',
+            text: 'Please check your internet connection.',
+            icon: 'error',
+            background: '#1e293b', 
+            color: '#f8fafc'
         });
-        
-        event.target.reset(); // Clear the form
-        
-        // Restore button to initial state
+    })
+    .finally(() => {
         btn.innerHTML = originalText;
         btn.style.opacity = '1';
-    }, 1500);
-
+    });
 }
 
-// 5. Dynamic Theme Switcher & Toast Notification
+// 5. Dynamic Theme Switcher, Animation Trigger & Toast Notification
 const themeBubble = document.getElementById('themeBubble');
 const themeIcon = document.getElementById('themeIcon');
 const toastMessage = document.getElementById('toastMessage');
 
-// Define available themes and their corresponding icons/names
-const themes = [
-    { id: 'dark', icon: '🌙', name: 'Dark Tech' },
-    { id: 'minimalist', icon: '☀️', name: 'Minimalist Light' },
-    { id: 'cyberpunk', icon: '⚡', name: 'Cyberpunk Neon' }
-];
+// Pastikan elemennya ada di HTML sebelum menjalankan script
+if (themeBubble && themeIcon && toastMessage) {
+    const themes = [
+        { id: 'dark', icon: '🌙', name: 'Dark Tech' },
+        { id: 'minimalist', icon: '☀️', name: 'Minimalist Light' },
+        { id: 'cyberpunk', icon: '⚡', name: 'Cyberpunk Neon' }
+    ];
 
-// Check local storage for saved theme, default to index 0 (dark)
-let currentThemeIndex = localStorage.getItem('savedThemeIndex') ? parseInt(localStorage.getItem('savedThemeIndex')) : 0;
-let toastTimeout;
+    let currentThemeIndex = localStorage.getItem('savedThemeIndex') ? parseInt(localStorage.getItem('savedThemeIndex')) : 0;
+    let toastTimeout;
 
-// Function to apply the theme
-function applyTheme(index) {
-    const selectedTheme = themes[index];
-    
-    // Set data attribute on the root HTML tag
-    document.documentElement.setAttribute('data-theme', selectedTheme.id);
-    
-    // Update the bubble icon
-    themeIcon.textContent = selectedTheme.icon;
-    
-    // Save preference to local storage
-    localStorage.setItem('savedThemeIndex', index);
-}
+    function applyTheme(index) {
+        const selectedTheme = themes[index];
+        
+        // Mengubah atribut tema di HTML
+        document.documentElement.setAttribute('data-theme', selectedTheme.id);
+        themeIcon.textContent = selectedTheme.icon;
+        localStorage.setItem('savedThemeIndex', index);
+        
+        // Memicu ulang animasi "Pop-Out" di CSS
+        document.body.classList.remove('theme-transitioning');
+        void document.body.offsetWidth; // Trik ajaib JS untuk mereset animasi
+        document.body.classList.add('theme-transitioning');
+    }
 
-// Function to show the disappearing text (Toast)
-function showToast(message) {
-    toastMessage.textContent = message;
-    toastMessage.classList.add('show');
-    
-    // Clear previous timeout if user clicks fast
-    clearTimeout(toastTimeout);
-    
-    // Hide toast after 2.5 seconds
-    toastTimeout = setTimeout(() => {
-        toastMessage.classList.remove('show');
-    }, 2500);
-}
+    function showToast(message) {
+        toastMessage.textContent = message;
+        toastMessage.classList.add('show');
+        
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            toastMessage.classList.remove('show');
+        }, 2500);
+    }
 
-// Function to apply the theme with animation trigger
-function applyTheme(index) {
-    const selectedTheme = themes[index];
-    
-    // Set data attribute on the root HTML tag
-    document.documentElement.setAttribute('data-theme', selectedTheme.id);
-    themeIcon.textContent = selectedTheme.icon;
-    localStorage.setItem('savedThemeIndex', index);
-    
-    // Remove animation class
-    document.body.classList.remove('theme-transitioning');
-    
-    // Magic trick: Trigger DOM reflow to restart animation from the beginning
-    void document.body.offsetWidth; 
-    
-    // Add animation class back to make text and elements pop out
-    document.body.classList.add('theme-transitioning');
-}
+    // Terapkan tema saat halaman pertama kali dimuat
+    applyTheme(currentThemeIndex);
 
-
-// 5. Hamburger Menu Toggle (Mobile)
-const hamburger = document.getElementById('hamburger');
-const navLinks = document.querySelector('.nav-links');
-const navItems = document.querySelectorAll('.nav-links li a');
-
-// Open/Close menu when hamburger icon is clicked
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navLinks.classList.toggle('active');
-});
-
-// Close menu automatically when a link is clicked
-navItems.forEach(item => {
-    item.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navLinks.classList.remove('active');
+    // Event listener saat tombol gelembung diklik
+    themeBubble.addEventListener('click', () => {
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+        applyTheme(currentThemeIndex);
+        showToast(`System updated: ${themes[currentThemeIndex].name} Mode applied.`);
     });
-});
-
+}
