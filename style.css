@@ -519,6 +519,36 @@ footer a { color: var(--text-main); }
    RESPONSIVE DESIGN & MOBILE CAROUSEL
 ========================================= */
 @media (max-width: 900px) {
+      /* =========================================
+     ANIMASI "SWIPE" DISTRAKSI UNTUK MOBILE
+  ========================================= */
+  @keyframes swipeBounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+  }
+
+  /* Memunculkan badge "Swipe ->" di sebelah setiap judul section */
+  section h2::after {
+    content: "Swipe ➔";
+    display: inline-block;
+    font-size: 0.75rem;
+    color: #000; /* Warna teks dalam badge */
+    background-color: var(--accent); /* Warna background badge (hijau/kuning sesuai tema) */
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-left: 12px;
+    vertical-align: middle;
+    font-family: monospace;
+    font-weight: bold;
+    animation: swipeBounce 1.5s infinite; /* Animasi maju mundur otomatis */
+    box-shadow: 0 0 10px var(--accent); /* Efek cahaya (glow) tipis */
+  }
+
+  /* Sembunyikan tulisan swipe di bagian Contact (karena tidak perlu di-swipe) */
+  #contact h2::after, 
+  #hero h2::after {
+    display: none;
+  }
 
  #hero {
     padding-top: 120px; 
