@@ -515,14 +515,13 @@ footer a { color: var(--text-main); }
   opacity: 1;
   transform: translateY(0);
 }
-
 /* =========================================
-   RESPONSIVE DESIGN & MOBILE MENU
+   RESPONSIVE DESIGN & MOBILE CAROUSEL
 ========================================= */
 @media (max-width: 900px) {
-  .about-grid, .contact-inner { grid-template-columns: 1fr; }
   #hero h1 { font-size: 3.5rem; }
   
+  /* 1. Mobile Menu Horizontal Scroll */
   #navbar {
     flex-direction: column;
     align-items: flex-start;
@@ -535,48 +534,84 @@ footer a { color: var(--text-main); }
     width: 100%;
     overflow-x: auto;
     gap: 12px;
-    padding-bottom: 12px; /* Memberi ruang untuk slider di bawah tombol */
+    padding-bottom: 12px;
     scroll-behavior: smooth;
-    
-    /* Kustomisasi Scrollbar Tipis untuk Firefox */
     scrollbar-width: thin;
     scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
   }
   
-  /* Kustomisasi Slider (Scrollbar) untuk Chrome, Safari, dan Edge */
-  .nav-links::-webkit-scrollbar {
-    height: 4px; /* Ketebalan slider horisontal */
-  }
-  
-  .nav-links::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05); /* Warna jalur slider (redup) */
-    border-radius: 10px;
-  }
-  
-  .nav-links::-webkit-scrollbar-thumb {
-    background: var(--accent); /* Warna pegangan slider (hijau) */
-    border-radius: 10px;
-  }
+  .nav-links::-webkit-scrollbar { height: 4px; }
+  .nav-links::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+  .nav-links::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
-  .nav-links::-webkit-scrollbar-thumb:hover {
-    background: #0ea5e9; /* Sedikit menyala jika ditekan/disentuh */
-  }
-
-  /* Desain tombol menu kapsul untuk mobile */
   .nav-links li a {
     font-size: 0.85rem;
     padding: 6px 14px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    white-space: nowrap; /* Mencegah teks turun ke baris baru */
+    white-space: nowrap;
     display: inline-block;
   }
 
-  .nav-links li a:active {
-    background: var(--accent);
-    color: #000;
-  }
-}
+  .nav-links li a:active { background: var(--accent); color: #000; }
 
+  /* 2. Convert Sections to Horizontal Sliders (Carousel) */
+  .about-grid, .timeline, .skills-grid, .cert-grid {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 20px;
+    padding-bottom: 20px; /* Space for the visible scrollbar */
+    scroll-snap-type: x mandatory; /* Makes the cards snap neatly to the center */
+    
+    /* Firefox Scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+  }
+
+  /* Chrome/Safari/Edge Scrollbar for Carousels */
+  .about-grid::-webkit-scrollbar, 
+  .timeline::-webkit-scrollbar, 
+  .skills-grid::-webkit-scrollbar, 
+  .cert-grid::-webkit-scrollbar {
+    height: 6px; /* Slightly thicker than the menu scrollbar */
+  }
+  .about-grid::-webkit-scrollbar-track, 
+  .timeline::-webkit-scrollbar-track, 
+  .skills-grid::-webkit-scrollbar-track, 
+  .cert-grid::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  .about-grid::-webkit-scrollbar-thumb, 
+  .timeline::-webkit-scrollbar-thumb, 
+  .skills-grid::-webkit-scrollbar-thumb, 
+  .cert-grid::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
+  }
+
+  /* Make items take up most of the mobile screen width */
+  .about-text, .about-card, .timeline-item, .skill-category, .cert-card {
+    min-width: 85vw; /* 85% of screen width so the next card peeks out a bit */
+    scroll-snap-align: center;
+  }
+
+  /* Fix Timeline visuals for horizontal layout */
+  .timeline {
+    border-left: none; /* Remove vertical line */
+    padding-left: 0;
+    margin-left: 0;
+  }
+  .timeline-item {
+    margin-bottom: 0;
+  }
+  .timeline-dot {
+    display: none; /* Hide dots for a cleaner card layout on mobile */
+  }
+
+  /* Keep contact form vertical */
+  .contact-inner { grid-template-columns: 1fr; }
+}
 
