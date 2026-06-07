@@ -116,3 +116,61 @@ navItems.forEach(item => {
         navLinks.classList.remove('active');
     });
 });
+
+// 5. Dynamic Theme Switcher & Toast Notification
+const themeBubble = document.getElementById('themeBubble');
+const themeIcon = document.getElementById('themeIcon');
+const toastMessage = document.getElementById('toastMessage');
+
+// Define available themes and their corresponding icons/names
+const themes = [
+    { id: 'dark', icon: '🌙', name: 'Dark Tech' },
+    { id: 'minimalist', icon: '☀️', name: 'Minimalist Light' },
+    { id: 'cyberpunk', icon: '⚡', name: 'Cyberpunk Neon' }
+];
+
+// Check local storage for saved theme, default to index 0 (dark)
+let currentThemeIndex = localStorage.getItem('savedThemeIndex') ? parseInt(localStorage.getItem('savedThemeIndex')) : 0;
+let toastTimeout;
+
+// Function to apply the theme
+function applyTheme(index) {
+    const selectedTheme = themes[index];
+    
+    // Set data attribute on the root HTML tag
+    document.documentElement.setAttribute('data-theme', selectedTheme.id);
+    
+    // Update the bubble icon
+    themeIcon.textContent = selectedTheme.icon;
+    
+    // Save preference to local storage
+    localStorage.setItem('savedThemeIndex', index);
+}
+
+// Function to show the disappearing text (Toast)
+function showToast(message) {
+    toastMessage.textContent = message;
+    toastMessage.classList.add('show');
+    
+    // Clear previous timeout if user clicks fast
+    clearTimeout(toastTimeout);
+    
+    // Hide toast after 2.5 seconds
+    toastTimeout = setTimeout(() => {
+        toastMessage.classList.remove('show');
+    }, 2500);
+}
+
+// Initialize theme on page load
+applyTheme(currentThemeIndex);
+
+// Listen for bubble clicks
+themeBubble.addEventListener('click', () => {
+    // Cycle to the next theme
+    currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+    
+    applyTheme(currentThemeIndex);
+    
+    // Show notification
+    showToast(`System updated: ${themes[currentThemeIndex].name} Mode applied.`);
+});
