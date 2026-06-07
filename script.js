@@ -98,25 +98,6 @@ function handleSubmit(event) {
 
 }
 
-// 5. Hamburger Menu Toggle (Mobile)
-const hamburger = document.getElementById('hamburger');
-const navLinks = document.querySelector('.nav-links');
-const navItems = document.querySelectorAll('.nav-links li a');
-
-// Open/Close menu when hamburger icon is clicked
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navLinks.classList.toggle('active');
-});
-
-// Close menu automatically when a link is clicked
-navItems.forEach(item => {
-    item.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navLinks.classList.remove('active');
-    });
-});
-
 // 5. Dynamic Theme Switcher & Toast Notification
 const themeBubble = document.getElementById('themeBubble');
 const themeIcon = document.getElementById('themeIcon');
@@ -174,3 +155,24 @@ themeBubble.addEventListener('click', () => {
     // Show notification
     showToast(`System updated: ${themes[currentThemeIndex].name} Mode applied.`);
 });
+
+
+// 5. Hamburger Menu Toggle (Mobile)
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.querySelector('.nav-links');
+const navItems = document.querySelectorAll('.nav-links li a');
+
+// Open/Close menu when hamburger icon is clicked
+hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('active');
+});
+
+// Close menu automatically when a link is clicked
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('active');
+    });
+});
+
