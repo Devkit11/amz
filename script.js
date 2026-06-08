@@ -155,3 +155,56 @@ if (themeBubble && themeIcon && toastMessage) {
         showToast(`System updated: ${themes[currentThemeIndex].name} Mode applied.`);
     });
 }
+// 6. Mobile Carousel Click-to-Scroll Feature
+if (window.innerWidth <= 900) { // Hanya aktif di tampilan mobile sesuai media query CSS
+    const carousels = document.querySelectorAll('.about-grid, .timeline, .skills-grid, .cert-grid');
+
+    carousels.forEach(carousel => {
+        const cards = carousel.children;
+        
+        Array.from(cards).forEach(card => {
+            card.style.cursor = 'pointer'; // Mengubah cursor menjadi pointer agar tahu bisa diklik
+            
+            card.addEventListener('click', (e) => {
+                // Mencegah trigger geser jika yang diklik adalah link/tombol aktif di dalam kartu
+                if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('a') || e.target.closest('button')) {
+                    return;
+                }
+
+                const cardWidth = card.offsetWidth + 20; // Lebar kartu + gap antar kartu
+                const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+
+                // Jika sudah mentok di kanan, balik lagi ke paling kiri (loop)
+                if (carousel.scrollLeft >= maxScroll - 10) {
+                    carousel.scrollTo({
+                        left: 0,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    // Geser ke kartu berikutnya
+                    carousel.scrollBy({
+                        left: cardWidth,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    });
+}
+// 7. Clickable Swipe Badge Feature
+document.querySelectorAll('.swipe-badge').forEach(badge => {
+    badge.addEventListener('click', function() {
+        const targetSelector = this.getAttribute('data-target');
+        const carousel = document.querySelector(targetSelector);
+        if (carousel) {
+            const cardWidth = carousel.children[0].offsetWidth + 20;
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+
+            if (carousel.scrollLeft >= maxScroll - 10) {
+                carousel.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                carousel.scrollBy({ left: cardWidth, behavior: 'smooth' });
+            }
+        }
+    });
+});

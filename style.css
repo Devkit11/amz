@@ -550,22 +550,23 @@ footer a { color: var(--text-main); }
     50% { transform: translateX(10px); }
   }
 
-  /* Memunculkan badge "Swipe ->" di sebelah setiap judul section */
-  section h2::after {
-    content: "Swipe ➔";
-    display: inline-block;
-    font-size: 0.75rem;
-    color: #000; /* Warna teks dalam badge */
-    background-color: var(--accent); /* Warna background badge (hijau/kuning sesuai tema) */
-    padding: 3px 10px;
-    border-radius: 12px;
-    margin-left: 12px;
-    vertical-align: middle;
-    font-family: monospace;
-    font-weight: bold;
-    animation: swipeBounce 1.5s infinite; /* Animasi maju mundur otomatis */
-    box-shadow: 0 0 10px var(--accent); /* Efek cahaya (glow) tipis */
-  }
+ /* Ganti nama dari section h2::after menjadi .swipe-badge */
+.swipe-badge {
+  /* content: "Swipe ➔"; <-- HAPUS BARIS INI */
+  display: inline-block;
+  font-size: 0.75rem;
+  color: #000;
+  background-color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-left: 12px;
+  vertical-align: middle;
+  font-family: monospace;
+  font-weight: bold;
+  animation: swipeBounce 1.5s infinite;
+  box-shadow: 0 0 10px var(--accent);
+  cursor: pointer; /* Biar kalau di-hover muncul ikon tangan klik */
+}
 
   /* Sembunyikan tulisan swipe di bagian Contact (karena tidak perlu di-swipe) */
   #contact h2::after, 
